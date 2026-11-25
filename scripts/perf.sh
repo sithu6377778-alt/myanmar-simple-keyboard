@@ -18,12 +18,18 @@ echo "==> Typing benchmark"
 /usr/bin/time -l "$EXE" --benchmark 2> build/time.txt
 awk '/maximum resident set size/ {printf "peak memory during benchmark: %.1f MB\n", $1/1048576}' build/time.txt
 
-echo "==> Keyboard process sitting idle for 20 s"
+echo "==> Keyboard process: startup, then sitting idle for 30 s"
+cpu_seconds() { ps -o time= -p "$1" | awk -F: '{print $1 * 60 + $2}'; }
 "$EXE" > /dev/null 2>&1 &
 PID=$!
-sleep 20
+sleep 5
 if ps -p "$PID" > /dev/null; then
-  ps -o %cpu=,rss=,time= -p "$PID" | awk '{printf "cpu now: %s%%   memory: %.1f MB   total cpu time used in 20 s: %s\n", $1, $2/1024, $3}'
+  START_CPU=$(cpu_seconds "$PID")
+  sleep 30
+  END_CPU=$(cpu_seconds "$PID")
+  ps -o rss= -p "$PID" | awk '{printf "memory (RSS):              %.1f MB\n", $1/1024}'
+  echo "cpu used by startup:       ${START_CPU} s (one time)"
+  awk -v a="$START_CPU" -v b="$END_CPU" 'BEGIN {printf "cpu used while idle 30 s:  %.2f s  (%.3f%% of one core)\n", b - a, (b - a) / 30 * 100}'
   kill "$PID"
 else
   echo "(the keyboard process exited when started outside the input system)"
