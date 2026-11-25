@@ -109,7 +109,8 @@ case "dump":
                 guard !t.isEmpty else { continue }
                 tsv += "\(key)\t\(modName)\t\(describe(t))\t\(t)\n"
                 let escaped = t.unicodeScalars.map { String(format: "\\u{%04X}", $0.value) }.joined()
-                swiftEntries.append("        Key(\(key), .\(modName == "shift+option" ? "shiftOption" : modName)): \"\(escaped)\",")
+                let caseName = modName == "shift+option" ? "shiftOption" : (modName == "none" ? "plain" : modName)
+                swiftEntries.append("        Key(\(key), .\(caseName)): \"\(escaped)\",")
             }
         }
     }

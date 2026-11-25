@@ -1,0 +1,72 @@
+name: Build & test
+
+# Standard GitHub-hosted runners only: free and unlimited for public repos.
+# (Never use the "-large" / "-xlarge" runners here — those are billed.)
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, macos-26, macos-26-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System info
+        run: |
+          sw_vers
+          uname -m
+          xcrun swiftc --version
+
+      - name: Unit tests (ေ composer, 40+ cases)
+        run: scripts/test.sh
+
+      - name: Build app + installer
+        run: scripts/build.sh
+
+      - name: Self-test (Apple Myanmar layout + composer)
+        run: '"build/pkgroot/Library/Input Methods/MyanmarSimpleKeyboard.app/Contents/MacOS/MyanmarSimpleKeyboard" --self-test'
+
+      - name: Install test (pkg → register → enable)
+        run: scripts/install-test.sh
+
+      - name: Select test (informational)
+        continue-on-error: true
+        run: '"/Library/Input Methods/MyanmarSimpleKeyboard.app/Contents/MacOS/MyanmarSimpleKeyboard" --select'
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'macos-15'
+        with:
+          name: installer
+          path: |
+            build/*.pkg
+            build/icon-preview.png
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build release installer
+        run: VERSION="${GITHUB_REF_NAME#v}" scripts/build.sh
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" build/MyanmarSimpleKeyboard-*.pkg \
+            --title "Myanmar Simple Keyboard ${GITHUB_REF_NAME} (Beta)" \
+            --notes-file docs/release-notes.md

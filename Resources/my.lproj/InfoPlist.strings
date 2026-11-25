@@ -1,0 +1,5 @@
+/* Name shown in System Settings > Keyboard > Input Sources and in the menu bar. */
+"CFBundleName" = "Myanmar Simple Keyboard";
+"CFBundleDisplayName" = "Myanmar Simple Keyboard";
+"com.linnlabs.inputmethod.MyanmarSimple" = "Myanmar Simple Keyboard";
+"com.linnlabs.inputmethod.MyanmarSimple.Myanmar" = "မြန်မာ (Simple)";

@@ -1,0 +1,17 @@
+#!/bin/bash
+# Runs as root after the installer copies the files.
+APP="/Library/Input Methods/MyanmarSimpleKeyboard.app"
+EXE="$APP/Contents/MacOS/MyanmarSimpleKeyboard"
+
+# Stop an older running copy so the new version loads.
+/usr/bin/killall MyanmarSimpleKeyboard >/dev/null 2>&1 || true
+/usr/bin/xattr -dr com.apple.quarantine "$APP" >/dev/null 2>&1 || true
+
+# Register and enable the keyboard for the person who is logged in, so it
+# appears in the menu bar input list without a restart.
+CONSOLE_USER="$(/usr/bin/stat -f%Su /dev/console)"
+if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ] && [ "$CONSOLE_USER" != "loginwindow" ]; then
+  CONSOLE_UID="$(/usr/bin/id -u "$CONSOLE_USER")"
+  /bin/launchctl asuser "$CONSOLE_UID" /usr/bin/sudo -u "$CONSOLE_USER" "$EXE" --install || true
+fi
+exit 0

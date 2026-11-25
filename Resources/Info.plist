@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>MyanmarSimpleKeyboard</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.linnlabs.inputmethod.MyanmarSimple</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Myanmar Simple Keyboard</string>
+	<key>CFBundleDisplayName</key>
+	<string>Myanmar Simple Keyboard</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__BUILD__</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>15.0</string>
+	<key>LSBackgroundOnly</key>
+	<true/>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 Linn Labs. MIT License.</string>
+	<key>InputMethodConnectionName</key>
+	<string>com.linnlabs.inputmethod.MyanmarSimple_Connection</string>
+	<key>InputMethodServerControllerClass</key>
+	<string>MSKInputController</string>
+	<key>TICapsLockLanguageSwitchCapable</key>
+	<true/>
+	<key>TISIconIsTemplate</key>
+	<true/>
+	<key>TISIntendedLanguage</key>
+	<string>my</string>
+	<key>tsInputMethodCharacterRepertoireKey</key>
+	<array>
+		<string>Mymr</string>
+	</array>
+	<key>tsInputMethodIconFileKey</key>
+	<string>icon.tiff</string>
+	<key>ComponentInputModeDict</key>
+	<dict>
+		<key>tsInputModeListKey</key>
+		<dict>
+			<key>com.linnlabs.inputmethod.MyanmarSimple.Myanmar</key>
+			<dict>
+				<key>TISInputSourceID</key>
+				<string>com.linnlabs.inputmethod.MyanmarSimple.Myanmar</string>
+				<key>TISIntendedLanguage</key>
+				<string>my</string>
+				<key>TISIconIsTemplate</key>
+				<true/>
+				<key>tsInputModeAlternateMenuIconFileKey</key>
+				<string>icon.tiff</string>
+				<key>tsInputModeMenuIconFileKey</key>
+				<string>icon.tiff</string>
+				<key>tsInputModePaletteIconFileKey</key>
+				<string>icon.tiff</string>
+				<key>tsInputModeCharacterRepertoireKey</key>
+				<array>
+					<string>Mymr</string>
+				</array>
+				<key>tsInputModeDefaultStateKey</key>
+				<true/>
+				<key>tsInputModeIsVisibleKey</key>
+				<true/>
+				<key>tsInputModePrimaryInScriptKey</key>
+				<true/>
+				<key>tsInputModeScriptKey</key>
+				<string>smUnicodeScript</string>
+			</dict>
+		</dict>
+		<key>tsVisibleInputModeOrderedArrayKey</key>
+		<array>
+			<string>com.linnlabs.inputmethod.MyanmarSimple.Myanmar</string>
+		</array>
+	</dict>
+</dict>
+</plist>
