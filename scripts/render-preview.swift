@@ -9,13 +9,19 @@ let out = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "marked-p
 let circle = "\u{25CC}", e = "\u{1031}"
 
 // (label, committed text, marked text shown by the keyboard)
+let zwsp = "\u{200B}", zwnj = "\u{200C}"
+let lanyaasat = "\u{101C}\u{100A}\u{103A}"
+let stack = "\u{1014}\u{1039}"
 let samples: [(String, String, String)] = [
-    ("old: LA NYA ASAT + E", "\u{101C}\u{100A}\u{103A}", e),
-    ("new: LA NYA ASAT + CIRCLE E", "\u{101C}\u{100A}\u{103A}", circle + e),
-    ("after typing KHA", "\u{101C}\u{100A}\u{103A}", "\u{1001}" + e),
-    ("alone: CIRCLE E", "", circle + e),
-    ("stack waiting: KA + NA VIRAMA CIRCLE E", "\u{1000}", "\u{1014}\u{1039}" + circle + e),
-    ("kinzi waiting: SA + NGA ASAT VIRAMA CIRCLE E", "\u{101E}", "\u{1004}\u{103A}\u{1039}" + circle + e),
+    ("old: LA NYA ASAT + E", lanyaasat, e),
+    ("A: + CIRCLE E", lanyaasat, circle + e),
+    ("B: + ZWSP E", lanyaasat, zwsp + e),
+    ("C: + ZWNJ E", lanyaasat, zwnj + e),
+    ("after typing KHA", lanyaasat, "\u{1001}" + e),
+    ("stack A: KA + NA VIRAMA CIRCLE E", "\u{1000}", stack + circle + e),
+    ("stack B: KA + NA VIRAMA ZWSP E", "\u{1000}", stack + zwsp + e),
+    ("stack D: KA + NA VIRAMA E", "\u{1000}", stack + e),
+    ("kinzi B: SA + NGA ASAT VIRAMA ZWSP E", "\u{101E}", "\u{1004}\u{103A}\u{1039}" + zwsp + e),
 ]
 let fonts: [(String, NSFont?)] = [
     ("System font", NSFont.systemFont(ofSize: 30)),
