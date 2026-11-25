@@ -37,6 +37,9 @@ jobs:
       - name: Self-test (Apple Myanmar layout + composer)
         run: '"build/pkgroot/Library/Input Methods/MyanmarSimpleKeyboard.app/Contents/MacOS/MyanmarSimpleKeyboard" --self-test'
 
+      - name: Performance (size, speed, memory, idle CPU)
+        run: scripts/perf.sh
+
       - name: Install test (pkg → register → enable)
         run: scripts/install-test.sh
 

@@ -19,6 +19,8 @@ if CommandLine.arguments.count > 1 {
         exit(Registration.select())
     case "--self-test":
         exit(SelfTest.run())
+    case "--benchmark":
+        exit(Benchmark.run())
     case "--version":
         print("Myanmar Simple Keyboard \(version)")
         exit(0)
