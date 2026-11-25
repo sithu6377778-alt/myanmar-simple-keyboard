@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-VERSION="${VERSION:-0.1.1}"
+VERSION="${VERSION:-0.1.2}"
 BUILD_NUMBER="${BUILD_NUMBER:-1}"
 MIN_MACOS="15.0"
 NAME="MyanmarSimpleKeyboard"

@@ -44,6 +44,16 @@ jobs:
         continue-on-error: true
         run: '"/Library/Input Methods/MyanmarSimpleKeyboard.app/Contents/MacOS/MyanmarSimpleKeyboard" --select'
 
+      - name: Render marked-text preview
+        if: matrix.os == 'macos-26'
+        run: swift scripts/render-preview.swift build/marked-preview.png
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'macos-26'
+        with:
+          name: preview-macos-26
+          path: build/marked-preview.png
+
       - uses: actions/upload-artifact@v4
         if: matrix.os == 'macos-15'
         with:

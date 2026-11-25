@@ -16,6 +16,7 @@ public enum Myanmar {
     public static let virama: Unicode.Scalar = "\u{1039}"   // ္ (stacking)
     public static let asat: Unicode.Scalar = "\u{103A}"     // ်
     public static let nga: Unicode.Scalar = "\u{1004}"      // င
+    public static let dottedCircle: Unicode.Scalar = "\u{25CC}"  // ◌ (display only)
 
     /// Letters that can start a syllable and carry ေ.
     public static func isConsonant(_ s: Unicode.Scalar) -> Bool {
@@ -70,10 +71,16 @@ public struct EComposer {
     public var isComposing: Bool { active }
 
     /// What to show while composing: the cluster with ေ already in place.
+    /// While no consonant has arrived yet, a dotted circle stands in for it
+    /// (shown as ေ◌, like the iPhone key), so ေ doesn't attach itself to the
+    /// previous word on screen. The circle is never part of the final text.
     public var markedText: String {
         guard active else { return "" }
         var scalars = prefix + head
         if pendingAsat { scalars.append(Myanmar.asat) }
+        if head.isEmpty || head.last == Myanmar.virama {
+            scalars.append(Myanmar.dottedCircle)
+        }
         scalars.append(Myanmar.vowelE)
         return Self.string(scalars)
     }

@@ -169,8 +169,14 @@ check("backspace after commit goes to the app", [.key(E), .key(NA), .key(AA), .b
 check("focus lost mid-word", [.key(E), .key(KA), .key(R_M), .focusLost, .key(NA)], [KA, R_M, E, NA])
 check("ေ င ် then space (not kinzi)", keys(E, NGA, ASAT, SPACE), [NGA, E, ASAT, SPACE])
 
-// What the user sees while composing
-checkMarked("marked: ေ alone", keys(E), [E])
+// What the user sees while composing (◌ = dotted circle placeholder)
+let CIRCLE: UInt32 = 0x25CC
+checkMarked("marked: ေ alone shows ေ◌", keys(E), [CIRCLE, E])
+checkMarked("marked: after kinzi shows ◌", [.key(E), .chunk([NGA, ASAT, VIRAMA])], [NGA, ASAT, VIRAMA, CIRCLE, E])
+checkMarked("marked: waiting for stacked consonant", keys(E, NA, VIRAMA), [NA, VIRAMA, CIRCLE, E])
+checkMarked("marked: ေ က shows ကေ", keys(E, KA), [KA, E])
+check("dotted circle never reaches the text", [.key(E), .focusLost], [E])
+check("dotted circle never reaches the text (stack)", keys(E, NA, VIRAMA, SPACE), [NA, VIRAMA, E, SPACE])
 checkMarked("marked: ေ က ြ shows ကြေ", keys(E, KA, R_M), [KA, R_M, E])
 checkMarked("marked: cleared after a vowel", keys(E, KA, AA), [])
 

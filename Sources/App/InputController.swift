@@ -21,15 +21,6 @@ final class MSKInputController: IMKInputController {
         0x6E,   // contextual-menu key on PC keyboards
     ]
 
-    /// While ေ waits for its consonant the text is "marked text". Ask apps to
-    /// draw it like normal text (no underline). Apps that ignore these
-    /// attributes may still show their own thin underline.
-    private static let markedTextAttributes: [NSAttributedString.Key: Any] = [
-        .underlineStyle: 0,
-        .underlineColor: NSColor.clear,
-        .markedClauseSegment: 0,
-    ]
-
     private var composer = EComposer()
     private var showingMarkedText = false
 
@@ -119,8 +110,8 @@ final class MSKInputController: IMKInputController {
         }
         if !result.marked.isEmpty {
             let length = (result.marked as NSString).length
-            let marked = NSAttributedString(string: result.marked, attributes: Self.markedTextAttributes)
-            client.setMarkedText(marked,
+            // Shown underlined by the app while ေ waits (standard marked text).
+            client.setMarkedText(result.marked,
                                  selectionRange: NSRange(location: length, length: 0),
                                  replacementRange: notFound)
             showingMarkedText = true
