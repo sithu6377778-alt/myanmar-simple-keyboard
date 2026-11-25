@@ -26,13 +26,20 @@ func drawIcon(pixels: Int) -> NSBitmapImageRep {
 
     NSColor.black.set()
     let box = NSBezierPath(roundedRect: NSRect(x: 1.5, y: 1.5, width: 13, height: 13), xRadius: 3, yRadius: 3)
-    box.lineWidth = 1.2
+    box.lineWidth = 1.1
     box.stroke()
 
-    let font = NSFont(name: "Myanmar Sangam MN", size: 10) ?? NSFont.systemFont(ofSize: 10)
-    let glyph = NSAttributedString(string: "မ", attributes: [.font: font])
-    // Center using the glyph's real ink bounds (Myanmar fonts have tall line heights).
-    let line = CTLineCreateWithAttributedString(glyph)
+    // Size the glyph by its real ink bounds (Myanmar fonts have tall line
+    // heights), so it fills about 9 of the 16 points, then center it.
+    func makeLine(_ size: CGFloat) -> CTLine {
+        let font = NSFont(name: "Myanmar Sangam MN Bold", size: size)
+            ?? NSFont(name: "Myanmar Sangam MN", size: size)
+            ?? NSFont.boldSystemFont(ofSize: size)
+        return CTLineCreateWithAttributedString(NSAttributedString(string: "မ", attributes: [.font: font]))
+    }
+    let probe = CTLineGetBoundsWithOptions(makeLine(10), .useGlyphPathBounds)
+    let size = 10 * 9 / max(probe.width, probe.height)
+    let line = makeLine(size)
     let bounds = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
     ctx.textMatrix = .identity
     ctx.setFillColor(NSColor.black.cgColor)

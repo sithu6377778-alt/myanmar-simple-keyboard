@@ -18,6 +18,7 @@ final class MSKInputController: IMKInputController {
         kVK_F1, kVK_F2, kVK_F3, kVK_F4, kVK_F5, kVK_F6, kVK_F7, kVK_F8, kVK_F9, kVK_F10,
         kVK_F11, kVK_F12, kVK_F13, kVK_F14, kVK_F15, kVK_F16, kVK_F17, kVK_F18, kVK_F19, kVK_F20,
         kVK_JIS_Eisu, kVK_JIS_Kana,
+        0x6E,   // contextual-menu key on PC keyboards
     ]
 
     private var composer = EComposer()
@@ -60,14 +61,20 @@ final class MSKInputController: IMKInputController {
             return false
         }
 
-        guard let text = Self.translator.text(
-                keyCode: event.keyCode,
-                shift: flags.contains(.shift),
-                option: flags.contains(.option),
-                capsLock: flags.contains(.capsLock)),
-              !text.isEmpty,
-              !text.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7F })
-        else {
+        let text = Self.translator.text(
+            keyCode: event.keyCode,
+            shift: flags.contains(.shift),
+            option: flags.contains(.option),
+            capsLock: flags.contains(.capsLock)) ?? ""
+
+        // Keys that type nothing on Apple's Myanmar layout (e.g. Option+a)
+        // also type nothing here, instead of falling through to Latin letters.
+        if text.isEmpty {
+            return true
+        }
+
+        // Control characters (keypad Clear etc.) are for the app.
+        if text.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7F }) {
             finish(client)
             return false
         }
