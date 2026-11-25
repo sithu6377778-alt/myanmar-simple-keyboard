@@ -1,0 +1,41 @@
+name: Layout check
+
+# Extracts Apple's built-in Myanmar keyboard layout on real macOS runners so the
+# keyboard can be checked against it. Uses standard (free) runners only.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Tools/**"
+      - ".github/workflows/layout.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  layout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: System info
+        run: |
+          sw_vers
+          uname -m
+          swift --version
+      - name: List Myanmar input sources
+        run: swift Tools/layout-tool.swift list
+      - name: Dump Apple Myanmar layouts
+        run: |
+          for id in $(swift Tools/layout-tool.swift list | awk -F'\t' '/^com\.apple\.keylayout\./ {print $1}'); do
+            echo "################ $id"
+            swift Tools/layout-tool.swift dump "$id" "build/layout/$id"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: layout-${{ matrix.os }}
+          path: build/layout
+          if-no-files-found: warn
