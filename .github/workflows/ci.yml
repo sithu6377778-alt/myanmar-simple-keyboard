@@ -51,7 +51,7 @@ jobs:
           name: installer
           path: |
             build/*.pkg
-            build/icon-preview.png
+            build/icon-preview*.png
 
   release:
     needs: build
