@@ -5,7 +5,6 @@ name: Build & test
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -53,20 +52,3 @@ jobs:
             build/*.pkg
             build/icon-preview*.png
 
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: macos-15
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build release installer
-        run: VERSION="${GITHUB_REF_NAME#v}" scripts/build.sh
-      - name: Publish GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "$GITHUB_REF_NAME" build/MyanmarSimpleKeyboard-*.pkg \
-            --title "Myanmar Simple Keyboard ${GITHUB_REF_NAME} (Beta)" \
-            --notes-file docs/release-notes.md

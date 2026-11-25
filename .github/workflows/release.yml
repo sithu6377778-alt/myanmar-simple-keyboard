@@ -1,0 +1,41 @@
+name: Release
+
+# Run from GitHub: Actions → Release → Run workflow.
+# Tests, builds the installer, installs it on the runner as a check, then
+# publishes a GitHub Release with the .pkg attached.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g. 0.1.0)"
+        required: true
+        default: "0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15   # standard runner: free for public repos
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check version format
+        run: '[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Version must look like 0.1.0"; exit 1; }'
+      - name: Unit tests
+        run: scripts/test.sh
+      - name: Build installer
+        run: scripts/build.sh
+      - name: Self-test
+        run: '"build/pkgroot/Library/Input Methods/MyanmarSimpleKeyboard.app/Contents/MacOS/MyanmarSimpleKeyboard" --self-test'
+      - name: Install test
+        run: scripts/install-test.sh
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" "build/MyanmarSimpleKeyboard-$VERSION.pkg" \
+            --target "$GITHUB_SHA" \
+            --title "Myanmar Simple Keyboard v$VERSION (Beta)" \
+            --notes-file docs/release-notes.md
